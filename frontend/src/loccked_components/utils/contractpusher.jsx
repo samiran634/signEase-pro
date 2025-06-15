@@ -1,13 +1,14 @@
- 
-
-import React, { useEffect } from "react";
-import { RoomProvider, useMutation, useStorage } from "../../../liveblocks.config";
+import React, { useEffect, useState } from "react";
+import { RoomProvider, useMutation, useStorageRoot } from "../../../liveblocks.config";
 
 const AddContractRoom = ({ contract, onComplete }) => {
-  const storage = useStorage(); // returns null until storage is ready
-  const addContract = useMutation(({ storage }, newContract) => {
-    const contracts = storage.get("contracts");
+  const root = useStorageRoot();
+  const [ready, setReady] = useState(false);
+  const [hasAdded, setHasAdded] = useState(false);
 
+  const addContract = useMutation(({ storage }, newContract) => {
+    console.log("💡 Mutation triggered with:", newContract);
+    const contracts = storage.get("contracts");
     if (contracts) {
       contracts.push(newContract);
     } else {
@@ -15,13 +16,26 @@ const AddContractRoom = ({ contract, onComplete }) => {
     }
   }, []);
 
+  // Wait until Liveblocks storage is fully loaded
   useEffect(() => {
-    if (storage && contract) {
-      addContract(contract).then(() => {
-        onComplete?.();
-      });
+    if (root) {
+      setReady(true);
     }
-  }, [storage, contract, addContract, onComplete]);
+  }, [root]);
+
+  useEffect(() => {
+    if (ready && contract && !hasAdded) {
+      setHasAdded(true); // prevent double-send
+      addContract(contract)
+        .then(() => {
+          console.log("✅ Contract added!");
+          onComplete?.();
+        })
+        .catch((err) => {
+          console.error("❌ Error adding contract:", err);
+        });
+    }
+  }, [ready, contract, hasAdded, addContract, onComplete]);
 
   return null;
 };

@@ -17,7 +17,7 @@ const HeroSection=(props)=>{
                                 {/*main kotha*/}
                                 <h1 className=" text-4xl sm:text-3xl">Streamline Your Worldflow <br /> with Digital Signature</h1>
                         </div>
-                        <div className="w-[45%] lg:pr-4 lg:mr-5 ">
+                        <div className="w-[45%] lg:pr-4 lg:mr-5 hidden md:block ">
                                 {/*paragraph*/}
                                 Signease revolutionizes the way you handle documents by eleminating tedious paperwork. Experience the ease of managing contracts with out AI assistant that highlights key details and simplifies negotiations.
                              <div className="flex flex-row gap-3 mt-2.5" >
@@ -34,7 +34,7 @@ const HeroSection=(props)=>{
                     </div>
                 <div className="mt-12 flex justify-center ">
                     {/*image*/}
-                        <img src="/images/hero.png" alt="hero image"/> 
+                        <img src="/images/hero.png" alt="hero image" /> 
                 </div>
               </div>
             </div>

@@ -1,28 +1,25 @@
- import { createClient } from "@liveblocks/client";
+import { createClient } from "@liveblocks/client";
 import { createRoomContext } from "@liveblocks/react";
 
 const client = createClient({
-  publicApiKey: import.meta.env.VITE_LIVEBLOCKS_PUBLIC_KEY, // Use .env value
+  publicApiKey: import.meta.env.VITE_LIVEBLOCKS_PUBLIC_KEY,
 });
 
 const {
-  suspense: {
-    RoomProvider,
-    useRoom,
-    useStorage,
-    useMutation,
-    useMyPresence,
-    useUpdateMyPresence,
-    useOthers,
-  },
+  RoomProvider,
+  useMutation,
+  useStorage,
+  useStorageRoot, // ✅ This must be included here
+  useOthers,
+  useSelf,
 } = createRoomContext(client);
 
+// ✅ Export everything you use in your components
 export {
   RoomProvider,
-  useRoom,
-  useStorage,
   useMutation,
-  useMyPresence,
-  useUpdateMyPresence,
+  useStorage,
+  useStorageRoot,
   useOthers,
+  useSelf,
 };

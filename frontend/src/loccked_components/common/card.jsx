@@ -6,29 +6,19 @@ import { toast } from "react-toastify";
 
 const CardComponent = ({ TitleText, SubtitleText, cid }) => {
   const navigate = useNavigate();
+  const { user } = useUser();
+  const { userMemberships, isLoaded } = useOrganizationList({ userMemberships: true });
+
   const [isClicked, setIsClicked] = useState(false);
   const [filteredOrgs, setFilteredOrgs] = useState([]);
   const [link, setLink] = useState("");
-  const { user } = useUser();
-  const { userMemberships, isLoaded } = useOrganizationList({ userMemberships: true });
   const [cardImage, setCardImage] = useState("/images/cool_background.png");
   const [display, setDisplay] = useState("flex");
+
   const [selectedOrg, setSelectedOrg] = useState(null);
   const [contractPayload, setContractPayload] = useState(null);
 
-  const handleOrgSelection = (targetOrg) => {
-    const payload = {
-      fromOrg: user?.organizationMemberships?.[0]?.organization.id,
-      fileCid: cid,
-      title: TitleText,
-      subtitle: SubtitleText,
-      timestamp: Date.now(),
-    };
-
-    setSelectedOrg(targetOrg);
-    setContractPayload(payload);
-  };
-
+  // Set link from CID
   useEffect(() => {
     if (cid) {
       setLink(`${import.meta.env.VITE_GATEWAY_URL}/${cid}`);
@@ -43,12 +33,37 @@ const CardComponent = ({ TitleText, SubtitleText, cid }) => {
 
   const handleRequestClick = () => {
     if (isLoaded && userMemberships?.data?.length > 0) {
+      const currentOrgId = user?.organizationMemberships?.[0]?.organization.id;
       const otherOrgs = userMemberships.data
         .map((m) => m.organization)
-        .filter((org) => org.id !== user?.organizationMemberships?.[0]?.organization.id);
+        .filter((org) => org.id !== currentOrgId);
+
       setFilteredOrgs(otherOrgs);
+      setIsClicked(true);
     }
-    setIsClicked(true);
+  };
+
+  const handleOrgSelection = (targetOrg) => {
+    const payload = {
+      fromOrg: user?.organizationMemberships?.[0]?.organization.id,
+      fileCid: cid,
+      title: TitleText,
+      subtitle: SubtitleText,
+      timestamp: Date.now(),
+    };
+
+    setSelectedOrg(targetOrg.id);
+    setContractPayload(payload);
+  };
+
+  const handleComplete = () => {
+    toast.success("Request sent successfully");
+    setCardImage("/gifs/request_done.gif");
+    setDisplay("hidden");
+    setIsClicked(false);
+    setFilteredOrgs([]);
+    setSelectedOrg(null);
+    setContractPayload(null);
   };
 
   const handleClosePopup = () => {
@@ -128,20 +143,12 @@ const CardComponent = ({ TitleText, SubtitleText, cid }) => {
         </div>
       )}
 
-      {/* Liveblocks Room Mutation Sender */}
+      {/* Inject Liveblocks contract sender after selection */}
       {selectedOrg && contractPayload && (
         <ContractSender
-          orgId={selectedOrg.id}
+          orgId={selectedOrg}
           contractData={contractPayload}
-          onComplete={() => {
-            toast.success("Request sent successfully");
-            setCardImage("/gifs/request_done.gif");
-            setDisplay("hidden");
-            setIsClicked(false);
-            setFilteredOrgs([]);
-            setSelectedOrg(null);
-            setContractPayload(null);
-          }}
+          onComplete={handleComplete}
         />
       )}
     </div>
