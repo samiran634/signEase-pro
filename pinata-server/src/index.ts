@@ -1,12 +1,12 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { PinataSDK } from 'pinata'
-
-const app = new Hono()
+import { handle } from 'hono/vercel'
+const app = new Hono().basePath('/api')
 const jwt = process.env.PINATA_JWT
 const gateway = process.env.GATEWAY_URL
 app.use(cors())
-
+ export const runtime = 'edge'
 app.get('/', (c) => c.text('Hello Hono!'))
 
 // ✅ Identify or create group
@@ -130,4 +130,5 @@ app.get('/retrieve_file', async (c) => {
   }
 })
 
-export default app
+export const GET = handle(app)
+export const POST = handle(app)
