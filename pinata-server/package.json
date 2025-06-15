@@ -1,8 +1,9 @@
 {
   "name": "pinata-server",
-  "scripts": {
-    "dev": "bun run --hot src/index.ts"
-  },
+ "scripts": {
+  "dev": "bun run --hot src/index.ts",
+  "build": "bun build src/index.ts --outdir dist"
+},
   "dependencies": {
     "@pinata/sdk": "^2.1.0",
     "hono": "^4.7.11",
