@@ -3,16 +3,16 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import ChatbotContainer from "./chatbot_container";
 import { NavBar } from "./common/NavBar";
 import PdfComp from "./pdfComp";
-import { useUser, useOrganization } from "@clerk/clerk-react";
-import TakeConformation from "./conformation";
+import { useUser } from "@clerk/clerk-react";
+ 
 export default function PdfReadandAsk() {
-  const [pdfFile, setPdfFile] = useState(null);
+   
   const [searchParams] = useSearchParams();
   const [isVisible, setVisible] = useState(false);
   const navigate = useNavigate();
   const { user } = useUser();
-  const { organization } = useOrganization();
-  const pdfId = searchParams.get("key");
+  
+  const url = searchParams.get("url");
   
   // Check if user is logged in
   useEffect(() => {
@@ -20,28 +20,14 @@ export default function PdfReadandAsk() {
       navigate("/sign-in");
     }
   }, [user, navigate]);
-console.log("ingo ablut user",user);
+ 
   const navItems = [
     { text: "home", onClick: () => navigate("/home"), ariaLabel: "home" },
     { text: "profile", onClick: () => navigate("/profile"), ariaLabel: "profile" },
     { text: "About", onClick: () => navigate("/about"), ariaLabel: "about" },
   ];
 
-  useEffect(() => {
-    async function fetchPdfData() {
-      if (!pdfId || !organization) return;
-
-      try {
-        const pdfUrl = `http://localhost:5000/get-file?orgName=${organization.id}&fileId=${pdfId}`;  
-        console.log(pdfUrl);
-        setPdfFile(pdfUrl);
-      } catch (error) {
-        console.error("Error fetching PDF data:", error);
-      }
-    }
-
-    fetchPdfData();
-  }, [pdfId, organization]);
+ 
 
 
 
@@ -57,7 +43,7 @@ console.log("ingo ablut user",user);
         <div className="flex w-full h-full mt-20">
           {/* PDF Section */}
           <div className="w-[70%] h-full">
-            {pdfFile ? <PdfComp pdfFile={pdfFile} /> : <p>Loading PDF...</p>}
+            {url ? <PdfComp pdfFile={url} /> : <p>Loading PDF...</p>}
           </div>
 
           {/* Chatbot Section */}
@@ -76,8 +62,7 @@ console.log("ingo ablut user",user);
           <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
         </svg>
       </button>
-      
-      {isVisible && <TakeConformation onClose={() => setVisible(false)} />}
+       
       </div>
     </>
   );

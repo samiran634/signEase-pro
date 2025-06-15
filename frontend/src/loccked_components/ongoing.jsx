@@ -5,41 +5,42 @@ import { NavBar } from "./common/NavBar";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useUser, RedirectToSignIn } from "@clerk/clerk-react";
 import { useOrganization } from "@clerk/clerk-react";
-import { PinataSDK } from "pinata";
+import { useLocation } from 'react-router-dom'
  
-const pinata = new PinataSDK({
-  pinataJwt: import.meta.env.VITE_JWT,
-  pinataGateway: import.meta.env.VITE_GATEWAY_URL
-})
+
 export default function OngoingPage() {
   const navigate = useNavigate();
   const organization = useOrganization().organization;
-  const orgCode=organization.id;
+
   const { user } = useUser();
   const [pdfData, setPdfData] = useState([]);
-  const  orgId=new URLSearchParams(this.props.location.search).get("orgId");
+  const location = useLocation()
+const orgId = new URLSearchParams(location.search).get('orgId')
   
   if (!user) {
     return <RedirectToSignIn />;
   }
 
 useEffect(() => {
-  //it is taking all the files that belongs to certain organization
   async function fetchOrgPDFs() {
     try {
-      const response = await fetch(`${import.meta.env.VITE_SERVER_URL}retrive_files?orgCode=${orgId}`)
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}retrieve_file?orgId=${orgId}`
+      )
       const result = await response.json()
 
-
-      setPdfData(result.json);
-      console.log(pdfData);
+      setPdfData(result.files) // assuming server responds with { files: [...] }
+      console.log("Fetched PDFs:", result.files)
     } catch (err) {
       console.error("Error fetching organization PDFs:", err)
     }
   }
 
-  fetchOrgPDFs()
-}, [])
+  if (orgId) {
+    fetchOrgPDFs()
+  }
+}, [orgId])
+
 
   const navItems = [
     {
@@ -88,10 +89,10 @@ useEffect(() => {
           {pdfData.map((pdf, index) => (
             <CardComponent 
               key={index}
-               TitleText={pdf.metadata.name}  // Using dynamic title from API response
-              
+               TitleText={pdf.name}
+               SubtitleText={pdf.created_at}
               orgName={organization.id}
-              Indecator={pdf._id}
+              cid={pdf.cid}
             />
           ))}
         </div>

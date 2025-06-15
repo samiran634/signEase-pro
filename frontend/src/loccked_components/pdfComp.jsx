@@ -4,10 +4,10 @@ import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import "@cyntler/react-doc-viewer/dist/index.css";
  
  
-function PdfComp({ pdfFile }) {
+function PdfComp({ pdfUrl }) {
  
  const docs=[{
-  uri:pdfFile,
+  uri:pdfUrl,
   fileType:"pdf",
  }]
   return (

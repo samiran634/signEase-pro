@@ -7,31 +7,50 @@ import { useOrganization } from "@clerk/clerk-react";
  import FileUpload from "./utils/pinata";
 
 const MainPage = () => {
-  
-  const organization = useOrganization().organization;
+const { organization, isLoaded } = useOrganization()
+const orgCode = organization?.id  
   const [orgId,setOrgId]=useState("");
   const navigate = useNavigate();
   const { user } = useUser();
   const [isClicked, setIsClicked] = useState(false);
-useEffect(()=>{
-    async function fetchOrgId() {
+  useEffect(() => {
+  if (!isLoaded || !organization) return
+
+  console.log('Org:', organization)
+  console.log('Org Code:', organization.id)
+
+  // now call your fetch logic here
+
+}, [isLoaded, organization])
+useEffect(() => {
+  async function fetchOrgId() {
     try {
-      //taking id form organization if it is not created than create new and return the id
+      let response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}identify_org?orgCode=${orgCode}`
+      )
+      let result = await response.json()
 
+      // If group not found, create it
+      if (result.error === "Group not found") {
+        response = await fetch(
+          `${import.meta.env.VITE_SERVER_URL}create_org?orgCode=${orgCode}`,
+          { method: 'POST' }
+        )
+        result = await response.json()
+      }
 
-      const response = await fetch(`${import.meta.env.VITE_SERVER_URL}identify_org?orgCode=${orgCode}`)
-      const result = await response.json()
-
-     console.log(result);
-     setOrgId(result.id);
- 
+      console.log("Org result:", result)
+      setOrgId(result?.group?.id || null)
     } catch (err) {
-      console.error("Error fetching organization id:", err)
+      console.error("Error fetching or creating organization:", err)
     }
   }
 
-  fetchOrgId()
-},[]);
+  if (orgCode) {
+    fetchOrgId()
+  }
+}, [orgCode])
+
 
    
   if (!user) {
@@ -50,8 +69,8 @@ useEffect(()=>{
       ariaLabel: "about",
     },
     {
-      text: "About",
-      onClick: () => navigate("/about"),
+      text: "Feedback",
+      onClick: () => navigate("/Feedback"),
       ariaLabel: "about",
     },
   ];
@@ -79,7 +98,11 @@ useEffect(()=>{
     <div className="w-full md:w-1/2 flex flex-col gap-6">
       
       {/* Card Component */}
-      {[
+      {[{
+        title:"Requests for signature",
+        text:"want to make deal with others? Here you can find who wants to make deal with you",
+        path:"/requests"
+      },
         {
           title: "Previous Contracts",
           text: "You will find all your previous contracts here.",
@@ -133,8 +156,7 @@ useEffect(()=>{
     isClicked && (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
         <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md mx-auto relative space-y-4">
-          
-          {/* ❌ Close Button */}
+       
           <button
             onClick={() => setIsClicked(false)}
             className="absolute top-3 right-3  from-neutral-700 text-3xl  text-gray-500 hover:text-red-600  "
@@ -143,7 +165,7 @@ useEffect(()=>{
             &times;
           </button>
 
-          <FileUpload orgId />
+         <FileUpload orgId={orgId} />
         </div>
       </div>
     )

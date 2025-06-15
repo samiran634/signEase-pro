@@ -11,6 +11,7 @@ import Dashboard from './landing-page/user/orgdashboard'
  import PreviousPage from './loccked_components/previous'
  import OngoingPage from './loccked_components/ongoing'
  import PdfReadandAsk from './loccked_components/viewPdf'
+ import ResponceOnRequest from './loccked_components/request'
 import './App.css'
 
 function App() {
@@ -33,7 +34,7 @@ function App() {
         <Route path="/previous" element={<PreviousPage />} />
         <Route path="/ongoing" element={<OngoingPage />} />
         <Route path="/read" element={<PdfReadandAsk />} />
-  
+        <Route path="/request" element={<ResponceOnRequest/>}/>
        
       </Routes>
     </BrowserRouter>
