@@ -1,17 +1,35 @@
 import React, { useState, useEffect } from "react";
 import { useOrganizationList, useUser } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
+import { ContractSender } from "../utils/contractpusher";
+import { toast } from "react-toastify";
 
 const CardComponent = ({ TitleText, SubtitleText, cid }) => {
   const navigate = useNavigate();
   const [isClicked, setIsClicked] = useState(false);
   const [filteredOrgs, setFilteredOrgs] = useState([]);
   const [link, setLink] = useState("");
-  const { organization } = useUser();
-  const { userMemberships, isLoaded } = useOrganizationList();
+  const { user } = useUser();
+  const { userMemberships, isLoaded } = useOrganizationList({ userMemberships: true });
+  const [cardImage, setCardImage] = useState("/images/cool_background.png");
+  const [display, setDisplay] = useState("flex");
+  const [selectedOrg, setSelectedOrg] = useState(null);
+  const [contractPayload, setContractPayload] = useState(null);
+
+  const handleOrgSelection = (targetOrg) => {
+    const payload = {
+      fromOrg: user?.organizationMemberships?.[0]?.organization.id,
+      fileCid: cid,
+      title: TitleText,
+      subtitle: SubtitleText,
+      timestamp: Date.now(),
+    };
+
+    setSelectedOrg(targetOrg);
+    setContractPayload(payload);
+  };
 
   useEffect(() => {
-    // Set link safely when cid changes
     if (cid) {
       setLink(`${import.meta.env.VITE_GATEWAY_URL}/${cid}`);
     }
@@ -24,10 +42,10 @@ const CardComponent = ({ TitleText, SubtitleText, cid }) => {
   };
 
   const handleRequestClick = () => {
-    if (isLoaded && userMemberships?.length > 0) {
-      const otherOrgs = userMemberships
+    if (isLoaded && userMemberships?.data?.length > 0) {
+      const otherOrgs = userMemberships.data
         .map((m) => m.organization)
-        .filter((org) => org.id !== organization?.id);
+        .filter((org) => org.id !== user?.organizationMemberships?.[0]?.organization.id);
       setFilteredOrgs(otherOrgs);
     }
     setIsClicked(true);
@@ -43,7 +61,7 @@ const CardComponent = ({ TitleText, SubtitleText, cid }) => {
       <div className="bg-white w-full sm:w-60 p-4 rounded-xl transition-all hover:-translate-y-2 duration-300 shadow-lg hover:shadow-2xl">
         <img
           className="rounded-xl object-cover h-40 w-full"
-          src="/images/cool_background.png"
+          src={cardImage}
           alt="Background"
         />
         <div className="p-2">
@@ -54,7 +72,7 @@ const CardComponent = ({ TitleText, SubtitleText, cid }) => {
             {SubtitleText || "Biggest enterprise technology acquisitions of 2021."}
           </p>
 
-          <div className="flex flex-col gap-2">
+          <div className={`${display} flex-col gap-2`}>
             <button
               className="w-full flex justify-center items-center px-3 py-2 text-sm font-medium text-white bg-blue-700 rounded-md hover:bg-blue-800"
               onClick={handleReadMore}
@@ -93,8 +111,13 @@ const CardComponent = ({ TitleText, SubtitleText, cid }) => {
             {filteredOrgs.length > 0 ? (
               <ul className="space-y-2 max-h-[300px] overflow-y-auto">
                 {filteredOrgs.map((org) => (
-                  <li key={org.id} className="p-2 border rounded">
-                    {org.name}
+                  <li key={org.id}>
+                    <button
+                      className="w-full p-2 border rounded cursor-pointer text-left"
+                      onClick={() => handleOrgSelection(org)}
+                    >
+                      {org.name}
+                    </button>
                   </li>
                 ))}
               </ul>
@@ -103,6 +126,23 @@ const CardComponent = ({ TitleText, SubtitleText, cid }) => {
             )}
           </div>
         </div>
+      )}
+
+      {/* Liveblocks Room Mutation Sender */}
+      {selectedOrg && contractPayload && (
+        <ContractSender
+          orgId={selectedOrg.id}
+          contractData={contractPayload}
+          onComplete={() => {
+            toast.success("Request sent successfully");
+            setCardImage("/gifs/request_done.gif");
+            setDisplay("hidden");
+            setIsClicked(false);
+            setFilteredOrgs([]);
+            setSelectedOrg(null);
+            setContractPayload(null);
+          }}
+        />
       )}
     </div>
   );

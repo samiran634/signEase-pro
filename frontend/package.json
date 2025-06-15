@@ -13,6 +13,8 @@
     "@clerk/clerk-react": "^5.31.9",
     "@clerk/themes": "^2.2.49",
     "@cyntler/react-doc-viewer": "^1.17.0",
+    "@liveblocks/client": "^2.24.3",
+    "@liveblocks/react": "^2.24.3",
     "@tailwindcss/vite": "^4.1.8",
     "axios": "^1.9.0",
     "form-data": "^4.0.3",
@@ -23,6 +25,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.2",
+    "react-toastify": "^11.0.5",
     "tailwindcss": "^4.1.8",
     "web3.storage": "^4.5.5"
   },
