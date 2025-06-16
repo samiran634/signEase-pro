@@ -1,0 +1,17 @@
+generator client {
+  provider = "prisma-client-js"
+
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model ContractRequest {
+  id        String   @id @default(cuid())
+  fromOrg   String
+  toOrg     String
+  fileCid   String
+  createdAt DateTime @default(now())
+}

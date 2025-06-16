@@ -8,7 +8,7 @@ const CardComponent = ({ TitleText, SubtitleText, cid }) => {
   const navigate = useNavigate();
   const { user } = useUser();
   const { userMemberships, isLoaded } = useOrganizationList({ userMemberships: true });
-
+console.log("CID :",cid);
   const [isClicked, setIsClicked] = useState(false);
   const [filteredOrgs, setFilteredOrgs] = useState([]);
   const [link, setLink] = useState("");
@@ -42,6 +42,35 @@ const CardComponent = ({ TitleText, SubtitleText, cid }) => {
       setIsClicked(true);
     }
   };
+ 
+const handleSendContract = async (targetOrg) => {
+  const payload = {
+    fromOrg: user?.organizationMemberships?.[0]?.organization.id,
+    toOrg: targetOrg.id,
+    fileCid:  cid, 
+  }
+
+  try {
+    const res = await fetch("https://your-backend.vercel.app/api/create-request", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    })
+
+    const data = await res.json()
+    if (res.ok) {
+      handleComplete();
+      handleClosePopup();
+      console.log("Contract sent successfully:", data)
+    } else {
+      console.error("Error sending contract:", data.error)
+    }
+  } catch (err) {
+    console.error("Network error:", err)
+  }
+}
 
   const handleOrgSelection = (targetOrg) => {
     const payload = {
@@ -129,7 +158,7 @@ const CardComponent = ({ TitleText, SubtitleText, cid }) => {
                   <li key={org.id}>
                     <button
                       className="w-full p-2 border rounded cursor-pointer text-left"
-                      onClick={() => handleOrgSelection(org)}
+                      onClick={() => handleSendContract(org)}
                     >
                       {org.name}
                     </button>
