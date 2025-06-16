@@ -47,7 +47,7 @@ const handleSendContract = async (targetOrg) => {
   const payload = {
     fromOrg: user?.organizationMemberships?.[0]?.organization.id,
     toOrg: targetOrg.id,
-    fileCid:  cid, 
+    fileCid:  cid,//how to get the cid form user???
   }
 
   try {
