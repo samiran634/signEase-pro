@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
-export const config = { runtime: 'nodejs' }
+ 
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
