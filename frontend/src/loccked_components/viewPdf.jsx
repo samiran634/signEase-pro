@@ -13,7 +13,7 @@ export default function PdfReadandAsk() {
   const { user } = useUser();
   
   const url = searchParams.get("url");
-  
+  console.log("form read :",url);
   // Check if user is logged in
   useEffect(() => {
     if (user === null) {
@@ -43,7 +43,7 @@ export default function PdfReadandAsk() {
         <div className="flex w-full h-full mt-20">
           {/* PDF Section */}
           <div className="w-[70%] h-full">
-            {url ? <PdfComp pdfFile={url} /> : <p>Loading PDF...</p>}
+            {url ? <PdfComp pdfUrl={url} /> : <p>Loading PDF...</p>}
           </div>
 
           {/* Chatbot Section */}

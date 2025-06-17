@@ -143,13 +143,13 @@ const LandingPage = () => {
           {/* Navigation Links */}
           <div className="md:flex space-x-6 text-sm text-gray-700">
             {/* Animated Logo */}
-            <motion.div 
-              className="text-lg font-bold text-gray-800"
+            <motion.img 
+              className="text-sm size-8 text-gray-200"
               whileHover={{ scale: 1.1 }}
               transition={{ duration: 0.2 }}
-            >
-              Logo
-            </motion.div>
+            src="/images/signeaselogo.png" />
+              
+            
 
             <motion.div 
               className="hidden md:flex space-x-6 text-sm text-gray-700 mt-0.86"

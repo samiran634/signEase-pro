@@ -1,27 +1,60 @@
-// /backend/api/create-request.ts
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export default async function handler(req, res) {
+export const config = {
+  runtime: 'nodejs',
+}
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*', // Change to your frontend URL in production
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+}
+
+/** @param {Request} req */
+export default async function handler(req) {
+  // Handle preflight (OPTIONS) request
+  if (req.method === 'OPTIONS') {
+    return new Response(null, {
+      status: 204,
+      headers: corsHeaders,
+    })
+  }
+
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' })
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+      status: 405,
+      headers: corsHeaders,
+    })
   }
 
   try {
-    const { fromOrg, toOrg, fileCid } = await req.body
+    const { fromOrg, toOrg, fileCid } = await req.json()
 
     if (!fromOrg || !toOrg || !fileCid) {
-      return res.status(400).json({ error: 'Missing fields' })
+      return new Response(JSON.stringify({ error: 'Missing fields' }), {
+        status: 400,
+        headers: corsHeaders,
+      })
     }
 
     const result = await prisma.contractRequest.create({
       data: { fromOrg, toOrg, fileCid },
     })
 
-    return res.status(200).json(result)
+    return new Response(JSON.stringify(result), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        ...corsHeaders,
+      },
+    })
   } catch (err) {
-    console.error(err)
-    return res.status(500).json({ error: 'Server error' })
+    console.error('[API ERROR]', err)
+    return new Response(JSON.stringify({ error: 'Server error' }), {
+      status: 500,
+      headers: corsHeaders,
+    })
   }
 }

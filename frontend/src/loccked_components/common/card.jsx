@@ -8,7 +8,7 @@ const CardComponent = ({ TitleText, SubtitleText, cid }) => {
   const navigate = useNavigate();
   const { user } = useUser();
   const { userMemberships, isLoaded } = useOrganizationList({ userMemberships: true });
-console.log("CID :",cid);
+// console.log("CID :",cid);
   const [isClicked, setIsClicked] = useState(false);
   const [filteredOrgs, setFilteredOrgs] = useState([]);
   const [link, setLink] = useState("");
@@ -21,12 +21,15 @@ console.log("CID :",cid);
   // Set link from CID
   useEffect(() => {
     if (cid) {
-      setLink(`${import.meta.env.VITE_GATEWAY_URL}/${cid}`);
+      setLink(`https://violet-absolute-cougar-682.mypinata.cloud/ipfs/${cid}`);
+    }else{
+      alert("server error")
     }
   }, [cid]);
 
   const handleReadMore = () => {
     if (link) {
+      console.log(link);
       navigate({ pathname: "/read", search: `?url=${encodeURIComponent(link)}` });
     }
   };

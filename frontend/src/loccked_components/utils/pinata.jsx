@@ -1,6 +1,12 @@
 import { useState } from 'react'
  
- 
+ import { PinataSDK } from 'pinata'
+
+const pinata = new PinataSDK({
+  pinataJwt: import.meta.env.VITE_JWT,
+  pinataGateway: import.meta.env.VITE_GATEWAY_URL
+})
+
  
 
 function FileUpload({ orgId }) {
@@ -51,7 +57,8 @@ function FileUpload({ orgId }) {
       if (result.cid) {
         setUploadStatus('File uploaded successfully!')
         const gateway = import.meta.env.VITE_GATEWAY_URL || "https://gateway.pinata.cloud/ipfs"
-        setLink(`${gateway}/${result.cid}`)
+      const ipfsLink = await pinata.gateways.public.convert(result.cid)
+        setLink(ipfsLink)
       } else {
         setUploadStatus(result.error || 'Upload failed')
       }

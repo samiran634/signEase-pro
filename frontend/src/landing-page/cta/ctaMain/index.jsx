@@ -19,22 +19,23 @@ const MainCta = () => {
   ]
 };
 
-const res = await fetch(
-  "https://sheetdb.io/api/v1/7xux6bhgch3gw",
-  {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  }
-);
+fetch('https://sheetdb.io/api/v1/7xux6bhgch3gw', {
+    method: 'POST',
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        data: [
+            {
+                 email
+            }
+        ]
+    })
+})
+  .then((response) => response.json())
+  .then((data) => console.log(data));
 
-      const result = await res.json();
-      if (res.ok) {
-        alert("Email sent successfully!");
-        setValue(""); // Clear input field
-      } else {
-        alert("Error sending email.");
-      }
     } catch (err) {
       console.error(err);
       alert("Network error.");
