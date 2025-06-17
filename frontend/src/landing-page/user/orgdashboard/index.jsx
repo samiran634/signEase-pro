@@ -13,7 +13,7 @@ const Dashboard = () => {
   return (
     <div className="flex flex-row items-center p-6">
       <div className="">
-      <h2 className="text-2x text-black font-bold mb-6 trxt-center text-white" >
+      <h2 className="text-2x text-black font-bold mb-6 trxt-center" >
         {organization 
           ? `Current Organization: ${organization.name}`
           : "Organizations"}
@@ -21,7 +21,12 @@ const Dashboard = () => {
       
       <div className="w-full max-w-md mb-8">
          
-        <OrganizationList />
+           <OrganizationList
+      afterCreateOrganizationUrl={(org) => `/home?orgid=${org.id}`}
+      afterSelectPersonalUrl={(user) => `/home?orgid=${org.id}`}
+      afterSelectOrganizationUrl={(org) => `/home?orgid=${org.id}`}
+         hidePersonal={true}
+    />
 
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-8" onClick={() => window.history.back()}>
     Go Back

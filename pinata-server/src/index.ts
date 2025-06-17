@@ -5,6 +5,7 @@ import { PinataSDK } from 'pinata'
 const app = new Hono()
 const jwt = process.env.PINATA_JWT
 const gateway = process.env.GATEWAY_URL
+ const CLERK_SECRET_KEY = process.env.CLERK_SECRET_KEY;
 app.use(cors())
 
 app.get('/', (c) => c.text('Hello Hono!'))
@@ -129,5 +130,34 @@ app.get('/retrieve_file', async (c) => {
     return c.json({ error: 'Failed to retrieve files' }, { status: 500 })
   }
 })
+app.get('/list-org', async (c) => {
+  console.log("from pinata", CLERK_SECRET_KEY);
+
+  const limit = 50;
+  const offset = 0;
+
+  try {
+    const response = await fetch(`https://api.clerk.com/v1/organizations?limit=${limit}&offset=${offset}`, {
+      headers: {
+        Authorization: `Bearer ${CLERK_SECRET_KEY}`,
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      console.error("Error from Clerk API:", text);
+      return c.json({ error: "Clerk API returned error", detail: text }, { status: 500 });
+    }
+
+    const data = await response.json();
+
+    console.log("Organizations:", data);
+    return c.json(data);  // ✅ This will send the actual organizations to the client
+  } catch (error) {
+    console.error("Fetch failed:", error);
+    return c.json({ error: 'Failed to retrieve organizations', detail: error  }, { status: 500 });
+  }
+});
 
 export default app

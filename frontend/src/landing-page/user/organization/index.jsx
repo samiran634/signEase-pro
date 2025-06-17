@@ -104,7 +104,7 @@ const OrganizationSetup = () => {
             <div>
               <p className="text-gray-600 mb-4">Create a new organization:</p>
               <OrganizationList 
-                hideFromList 
+                hidePersonal={true}
                 afterCreateOrganizationUrl="/"
                 afterSelectOrganizationUrl="/"
               />
