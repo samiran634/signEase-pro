@@ -125,6 +125,20 @@ const LandingPage = () => {
       navigate("/home");
     }
   }, [user, navigate]);
+const foterItems=   
+    [
+      {
+        name:'Contact Us',
+        link:"https://www.linkedin.com/in/samiran-chakraborty-6a7816203/"
+      } , {
+        name:'About Us'
+      }, {
+        name:'Support Center'
+      },{
+      name:'Blog Updates'
+      } 
+        
+    ]
 
   return (
     <>
@@ -354,15 +368,15 @@ const LandingPage = () => {
               className="flex flex-wrap gap-6 text-sm justify-center"
               variants={staggerContainer}
             >
-              {['Get Started', 'Contact Us', 'About Us', 'Support Center', 'Blog Updates'].map((link, index) => (
+              {foterItems.map((items) => (
                 <motion.a 
-                  key={link}
-                  href="#"
+                  key={items.index}
+                  href= {items.link}
                   variants={fadeInUp}
                   whileHover={{ y: -3, color: "#f59e0b" }}
                   className="transition-colors duration-200"
                 >
-                  {link}
+                   {items.name}
                 </motion.a>
               ))}
             </motion.div>
