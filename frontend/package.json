@@ -23,7 +23,6 @@
     "nft.storage": "^7.2.0",
     "pinata": "^2.4.5",
     "react": "^19.1.0",
-    "react-canvas-draw": "^1.2.1",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.2",
     "react-toastify": "^11.0.5",
