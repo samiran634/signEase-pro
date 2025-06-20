@@ -1,9 +1,9 @@
 {
   "name": "pinata-server",
-  "type":"module",
+  
   "scripts": {
     "dev": "bun run --hot src/index.ts",
-  "build": "bun build src/index.ts --outdir dist --target=node"
+  "build": "bun build src/index.ts --outdir dist --target=node --format=cjs"
   },
   "dependencies": {
     "@pinata/sdk": "^2.1.0",
