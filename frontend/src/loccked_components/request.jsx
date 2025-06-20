@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { NavBar } from "./common/NavBar";
 
-const RequestForSignature = () => {
+const RequestForSignature = ( ) => {
   const { organization } = useOrganization();
   const navigate = useNavigate();
   const [pendingContracts, setPendingContracts] = useState([]);
@@ -28,24 +28,23 @@ const RequestForSignature = () => {
   ];
 
   useEffect(() => {
-    if (!organization) return;
-
     const fetchContracts = async () => {
+      if (!organization?.id) return;
+
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/api/get-pending-requests`,
+          `${import.meta.env.VITE_SERVER_URL}get-request?toOrg=${organization.id}`,
           {
-            method: "POST",
+            method: "GET",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ toOrg: organization.id }),
           }
         );
 
         const data = await res.json();
         if (res.ok) {
-          setPendingContracts(data.contracts || []);
+          setPendingContracts(data || []);
         } else {
           console.error("Failed to fetch contracts", data);
         }
@@ -57,10 +56,13 @@ const RequestForSignature = () => {
     };
 
     fetchContracts();
-  }, [organization]);
+  }, [organization?.id]);
 
   const handleRead = (cid) => {
-    navigate({ pathname: "/read", search: `https://violet-absolute-cougar-682.mypinata.cloud/ipfs/${cid}` });
+    navigate({
+      pathname: "/read",
+      search: `?url=https://violet-absolute-cougar-682.mypinata.cloud/ipfs/${cid}&shear=${false}`,
+    });
   };
 
   const handleSign = (cid) => {
@@ -70,15 +72,20 @@ const RequestForSignature = () => {
   return (
     <>
       <NavBar siteName="signEase" navItems={navItems} />
+
       <div className="flex flex-col items-center p-6 bg-gray-100 min-h-screen">
         <h1 className="text-xl font-bold mb-4">Incoming Contract Signature Requests</h1>
+
         {loading ? (
-          <p>Loading...</p>
+          <div className="flex flex-col items-center">
+            <img src="/loader.svg" alt="Loading..." className="w-12 h-12 animate-spin mb-2" />
+            <p>Loading contracts...</p>
+          </div>
         ) : pendingContracts.length === 0 ? (
-          <>
-            <img src="/gifs/fiinding_request.gif" alt="no signature" className="w-48 mb-4" />
-            <p className="text-black">No signature requests.</p>
-          </>
+          <div className="flex flex-col items-center">
+            <img src="/gifs/fiinding_request.gif" alt="No signature requests" className="w-48 mb-4" />
+            <p className="text-black text-lg">No signature requests.</p>
+          </div>
         ) : (
           <ul className="space-y-4 w-full max-w-2xl">
             {pendingContracts.map((contract, index) => (
@@ -101,7 +108,7 @@ const RequestForSignature = () => {
                     onClick={() => handleSign(contract.fileCid)}
                     className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
                   >
-                    Sign
+                   Start a discioussion within organization
                   </button>
                 </div>
               </li>

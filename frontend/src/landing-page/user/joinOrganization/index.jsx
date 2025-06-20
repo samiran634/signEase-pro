@@ -14,7 +14,7 @@ const JoinOrganization = () => {
     
     try {
       // Accept the invitation using Clerk's API
-      await user.acceptOrganizationInvitation({
+      await user.getOrganizationInvitations({
         organizationInvitationId: invitationCode
       });
       
@@ -49,7 +49,7 @@ const JoinOrganization = () => {
         <button
           type="submit"
           disabled={isJoining}
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 text-white"
+          className="w-full bg-blue-600   py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 text-white"
         >
           {isJoining ? "Joining..." : "Join Organization"}
         </button>

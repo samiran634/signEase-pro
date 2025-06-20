@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { ContractSender } from "../utils/contractpusher";
 import { toast } from "react-toastify";
 
-const CardComponent = ({ TitleText, SubtitleText, cid }) => {
+const CardComponent = ({ TitleText, SubtitleText, cid,isPending }) => {
   const [allOrg, setAllorg] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
@@ -13,10 +13,13 @@ const CardComponent = ({ TitleText, SubtitleText, cid }) => {
   const [display, setDisplay] = useState("flex");
   const [selectedOrg, setSelectedOrg] = useState(null);
   const [contractPayload, setContractPayload] = useState(null);
-
+if(isPending){
+  setDisplay("hidden");
+  setCardImage("/gifs/request_done.gif")
+}
   const navigate = useNavigate();
   const { user } = useUser();
-  const { userMemberships } = useOrganizationList({ userMemberships: true });
+ 
 
   const userOrgId = user?.organizationMemberships?.[0]?.organization.id;
 
@@ -37,7 +40,7 @@ const CardComponent = ({ TitleText, SubtitleText, cid }) => {
   const handleRequestClick = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3000/list-org");
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}list-org`);
 
       if (!res.ok) {
         console.error("API error:", res.status);
@@ -45,9 +48,9 @@ const CardComponent = ({ TitleText, SubtitleText, cid }) => {
       }
 
       const data = await res.json();
-      const filtered = data.data.filter((org) => org.id !== userOrgId); // ✅ exclude self org
+      const filtered = data.data.filter((org) => org.id !== userOrgId);  
       setAllorg(filtered);
-      setIsClicked(true); // ✅ open the popup
+      setIsClicked(true); 
       console.log("Organizations:", filtered);
     } catch (err) {
       console.error("Request failed:", err);
@@ -64,7 +67,7 @@ const CardComponent = ({ TitleText, SubtitleText, cid }) => {
     };
 
     try {
-      const res = await fetch("https://sign-ease-pro-heba-d1h0de6g1-samirans-projects-221a41f0.vercel.app/api/create-request", {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}create-request`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -105,15 +108,15 @@ const CardComponent = ({ TitleText, SubtitleText, cid }) => {
       <div className="bg-white w-full sm:w-60 p-4 rounded-xl transition-all hover:-translate-y-2 duration-300 shadow-lg hover:shadow-2xl">
         <img className="rounded-xl object-cover h-40 w-full" src={cardImage} alt="Background" />
         <div className="p-2">
-          <h5 className="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">
+          <h5 className="mb-2 text-lg font-bold tracking-tight text-black  ">
             {TitleText || "Noteworthy technology acquisitions 2021"}
           </h5>
-          <p className="mb-3 font-normal text-gray-700 dark:text-gray-400 text-sm">
+          <p className="mb-3 font-normal text-gray-700  ">
             {SubtitleText || "Biggest enterprise technology acquisitions of 2021."}
           </p>
 
           <div className={`${display} flex-col gap-2`}>
-            <button
+            {/* <button
               className="w-full flex justify-center items-center px-3 py-2 text-sm font-medium text-white bg-blue-700 rounded-md hover:bg-blue-800"
               onClick={handleReadMore}
               disabled={!link}
@@ -122,7 +125,7 @@ const CardComponent = ({ TitleText, SubtitleText, cid }) => {
               <svg className="w-4 h-4 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
               </svg>
-            </button>
+            </button> */}
 
             <button
               className="w-full flex justify-center items-center px-3 py-2 text-sm font-medium text-white bg-blue-700 rounded-md hover:bg-blue-800"

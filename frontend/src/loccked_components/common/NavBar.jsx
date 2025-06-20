@@ -62,7 +62,7 @@ export const NavBar = ({ siteName, navItems }) => {
       </div>
 
       {/* Desktop Navigation Items */}
-      <div className="hidden md:flex md:items-center md:gap-2">
+      <div className="hidden md:flex md:items-center md:gap-2  ">
         {navItems.map((item, index) => (
           <button
             key={index}
@@ -84,21 +84,15 @@ export const NavBar = ({ siteName, navItems }) => {
             onClick={() => setIsMenuOpen(false)}
           />
           
-          <div className="md:hidden fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-background border-l border-border z-40 animate-slide-in-right shadow-2xl">
+          <div className="md:hidden fixed top-0 right-0 h-full w-screen max-w-[85vw] bg-gray-400 border-l border-border z-40 animate-slide-in-right shadow-2xl">
             <div className="flex justify-between items-center px-6 py-4 border-b border-border">
               <div className="text-foreground text-xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
                 {siteName}
               </div>
-              <button
-                onClick={() => setIsMenuOpen(false)}
-                className="p-2 rounded-lg hover:bg-secondary/50 transition-colors duration-200"
-                aria-label="Close menu"
-              >
-                <X className="w-5 h-5 text-foreground" />
-              </button>
+              
             </div>
 
-            <div className="flex flex-col p-6 gap-2">
+            <div className="flex flex-col p-6 gap-2 bg-amber-600">
               {navItems.map((item, index) => (
                 <button
                   key={index}

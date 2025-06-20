@@ -17,7 +17,7 @@ const OrganizationSetup = () => {
     
     try {
       // Accept the invitation using Clerk's API
-      await user.acceptOrganizationInvitation({
+      await user.getOrganizationInvitations({
         organizationInvitationId: invitationCode
       });
       
@@ -39,7 +39,7 @@ const OrganizationSetup = () => {
   
   return (
     <div className="flex w-screen justify-center  bg-gradient-to-r from-red-600 to-blue-600 h-screen overflow-auto">
-      <div className="flex flex-col justify-center bg-white p-8 rounded-lg shadow-md max-w-md w-full space-y-6 mt-8 rounded-2lg"> 
+      <div className="flex flex-col justify-center bg-white p-8 rounded-lg shadow-md w-3/4 space-y-6 mt-8 rounded-2lg"> 
         <h2 className="text-2xl text-center font-bold mb-6 text-black mt-4">Manage Your Organization</h2>
         
         {/* Tab Navigation */}
@@ -69,7 +69,7 @@ const OrganizationSetup = () => {
           {activeTab === "list" && (
             <div>
               <p className="text-gray-600 mb-4">Organizations you're a member of:</p>
-              <OrganizationList hideCreate />
+              <OrganizationList hidePersonal={true} />
             </div>
           )}
           
@@ -115,13 +115,13 @@ const OrganizationSetup = () => {
         {/* Skip for now button */}
         <button 
           onClick={skipForNow}
-          className="text-gray-500 py-2 text-sm hover:text-gray-700"
+          className="text-black py-2 text-3xl hover:text-gray-700"
         >
           proceed with selected organization
         </button>
         <button 
           onClick={skipForNow}
-          className="text-gray-500 py-2 text-sm hover:text-gray-700"
+          className="text-black py-2 text-3xl hover:text-gray-700"
         >
           Skip for now
         </button>

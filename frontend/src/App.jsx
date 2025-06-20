@@ -18,6 +18,7 @@ import PreviousPage from "./loccked_components/previous";
 import OngoingPage from "./loccked_components/ongoing";
 import PdfReadandAsk from "./loccked_components/viewPdf";
  import RequestForSignature from "./loccked_components/request";
+import { LiveMap } from "@liveblocks/client";
 
 import "./App.css";
 
@@ -33,6 +34,10 @@ const WithRoom = ({ children } ) => {
         status: "idle",
         org: roomId,
       }}
+        initialStorage={{
+    contractDiscussions: new LiveMap(),
+  }}
+
     >
       {children}
     </RoomProvider>
