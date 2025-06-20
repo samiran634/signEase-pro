@@ -39,8 +39,8 @@ const OrganizationSetup = () => {
   
   return (
     <div className="flex w-screen justify-center  bg-gradient-to-r from-red-600 to-blue-600 h-screen overflow-auto">
-      <div className="flex flex-col justify-center bg-white p-8 rounded-lg shadow-md w-3/4 space-y-6 mt-8 rounded-2lg"> 
-        <h2 className="text-2xl text-center font-bold mb-6 text-black mt-4">Manage Your Organization</h2>
+      <div className="flex flex-col justify-center bg-white p-8 rounded-lg shadow-md w-3/4  mt-8 rounded-2lg"> 
+        <h2 className=" text-2xl text-center font-bold text-black mt-4">Manage Your Organization</h2>
         
         {/* Tab Navigation */}
         <div className="flex mb-6 border-b">
