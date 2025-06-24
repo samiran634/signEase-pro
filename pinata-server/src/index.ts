@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { PinataSDK } from 'pinata'
-import { db } from './db'
+// import { db } from './db'
 
 const app = new Hono()
 
@@ -162,45 +162,45 @@ app.get('/list-org', async (c) => {
   }
 })
 
-app.post('/create-request', async (c) => {
-  try {
-    const { fromOrg, toOrg, fileCid } = await c.req.json()
+// app.post('/create-request', async (c) => {
+//   try {
+//     const { fromOrg, toOrg, fileCid } = await c.req.json()
 
-    if (!fromOrg || !toOrg || !fileCid) {
-      return c.json({ error: 'Missing fields' }, { status: 400 })
-    }
+//     if (!fromOrg || !toOrg || !fileCid) {
+//       return c.json({ error: 'Missing fields' }, { status: 400 })
+//     }
 
-    await db.execute(
-      'INSERT INTO contract_requests (fromOrg, toOrg, fileCid) VALUES (?, ?, ?)',
-      [fromOrg, toOrg, fileCid]
-    )
+//     await db.execute(
+//       'INSERT INTO contract_requests (fromOrg, toOrg, fileCid) VALUES (?, ?, ?)',
+//       [fromOrg, toOrg, fileCid]
+//     )
 
-    return c.json({ success: true }, { status: 200 })
-  } catch (e) {
-    console.error('[CREATE ERROR]', e)
-    return c.json({ error: 'Server error' }, { status: 500 })
-  }
-})
+//     return c.json({ success: true }, { status: 200 })
+//   } catch (e) {
+//     console.error('[CREATE ERROR]', e)
+//     return c.json({ error: 'Server error' }, { status: 500 })
+//   }
+// })
 
-app.get('/get-request', async (c) => {
-  try {
-    const toOrg = c.req.query('toOrg')
-     console.log(toOrg);
-    if (!toOrg) {
-      console.log(toOrg);
-      return c.json({ error: 'Missing toOrg param' }, { status: 400 })
-    }
+// app.get('/get-request', async (c) => {
+//   try {
+//     const toOrg = c.req.query('toOrg')
+//      console.log(toOrg);
+//     if (!toOrg) {
+//       console.log(toOrg);
+//       return c.json({ error: 'Missing toOrg param' }, { status: 400 })
+//     }
 
-    const [rows] = await db.execute(
-      'SELECT * FROM contract_requests WHERE toOrg = ? ORDER BY createdAt DESC',
-      [toOrg]
-    )
+//     const [rows] = await db.execute(
+//       'SELECT * FROM contract_requests WHERE toOrg = ? ORDER BY createdAt DESC',
+//       [toOrg]
+//     )
 
-    return c.json(rows)
-  } catch (e) {
-    console.error('[GET ERROR]', e)
-    return c.json({ error: 'Server error' }, { status: 500 })
-  }
-})
+//     return c.json(rows)
+//   } catch (e) {
+//     console.error('[GET ERROR]', e)
+//     return c.json({ error: 'Server error' }, { status: 500 })
+//   }
+// })
 
 export default app
